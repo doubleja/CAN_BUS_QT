@@ -43,7 +43,15 @@ private slots:
 
     void on_Sbalance_open_btn_clicked();
 
-    void on_pushButton_13_clicked();
+    void on_liquid_open_btn_clicked();
+
+    void on_liquid_close_btn_clicked();
+
+    void on_V_calibration_btn_clicked();
+
+    void on_I_calibration_btn_clicked();
+
+    void on_read_version_btn_clicked();
 
 private:
     Ui::MainWindow *ui;

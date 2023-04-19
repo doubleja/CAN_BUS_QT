@@ -34,6 +34,15 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+
+    //lineedit文本框输入类型限制 int型
+//   QValidator * validator = new QIntValidator(0,999,this);
+//   V_calibration_edit->setValidator(validator);
+   /*也可以表示成
+   QLineEdit * edit new QLineEdit(this);
+   edit->setValidator(new QIntValidator(0,999,this));
+   */
+
     canthread = new CANThread();
     connect(canthread,&CANThread::getProtocolData,this,&MainWindow::onGetProtocolData);
     connect(canthread,&CANThread::boardInfo,this,&MainWindow::onBoardInfo);
@@ -114,6 +123,162 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
         messageList << str;//数据
         */
         AddDataToList(messageList);
+
+        QString m=messageList.at(9);//接收的数据
+        qDebug()<<"接收信号"<<messageList;
+        //数据实时监测
+        //ID号识别
+        qDebug()<<"接收的数据整个id"<<messageList.at(5);
+        QString id= messageList.at(5);
+        int ID =id.mid(8,2).toInt(Q_NULLPTR,10);
+        qDebug()<<"id号"<<id.mid(8,2);
+        //id号
+        if(ID==10)
+        {
+            qDebug()<<"四路电压"<<messageList.at(9);
+            QString v1_4=messageList.at(9);
+            //删除t所有空格
+            int v1=v1_4.mid(3,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
+            int v2=v1_4.mid(9,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
+            int v3=v1_4.mid(15,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
+            int v4=v1_4.mid(21,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
+
+            QString V1=QString::number(v1,10);
+            QString V2=QString::number(v2,10);
+            QString V3=QString::number(v3,10);
+            QString V4=QString::number(v4,10);
+            qDebug()<<"v1"<<V1;
+            qDebug()<<"v2"<<V2;
+            qDebug()<<"v3"<<V3;
+            qDebug()<<"v4"<<V4;
+
+            ui->V1_edit->setText(V1);
+            ui->V2_edit->setText(V2);
+            ui->V3_edit->setText(V3);
+            ui->V4_edit->setText(V4);
+
+            return;
+        }
+        if(ID==11)
+        {
+            qDebug()<<"八个温度采样"<<messageList.at(9);
+            QString t=messageList.at(9);
+            QString T=t.mid(3).remove(QRegExp("\\s"));
+            qDebug()<<"T"<<T; //7F7F7F7F7F7F7F7F
+            int t1=T.mid(0,2).toInt(Q_NULLPTR,16);
+            int t2= T.mid(2,2).toInt(Q_NULLPTR,16);
+            int t3= T.mid(4,2).toInt(Q_NULLPTR,16);
+            int t4= T.mid(6,2).toInt(Q_NULLPTR,16);
+            int t5= T.mid(8,2).toInt(Q_NULLPTR,16);
+            int t6= T.mid(10,2).toInt(Q_NULLPTR,16);
+            int t7= T.mid(12,2).toInt(Q_NULLPTR,16);
+            int t8= T.mid(14,2).toInt(Q_NULLPTR,16);
+            qDebug()<<"t1"<<t1;
+            qDebug()<<"t2"<<t2;
+
+            ui->t1_edit->setText(QString::number(t1,10));
+
+            ui->t2_edit->setText(QString::number(t2,10));
+
+            ui->t3_edit->setText(QString::number(t3,10));
+
+            ui->t4_edit->setText(QString::number(t4,10));
+
+            ui->t5_edit->setText(QString::number(t5,10));
+
+            ui->t6_edit->setText(QString::number(t6,10));
+
+            ui->t7_edit->setText(QString::number(t7,10));
+
+            ui->t8_edit->setText(QString::number(t8,10));
+
+
+            return;
+        }
+        if(ID==12)
+        {
+            qDebug()<<"四个温度+电流采样"<<messageList.at(9);
+            QString t=messageList.at(9);
+            QString T=t.mid(3).remove(QRegExp("\\s"));
+            qDebug()<<"T"<<T; //7F 7F 7F 7F 01 0C 00 00
+            int t9=T.mid(0,2).toInt(Q_NULLPTR,16);
+            int t10= T.mid(2,2).toInt(Q_NULLPTR,16);
+            int t11= T.mid(4,2).toInt(Q_NULLPTR,16);
+            int t12= T.mid(6,2).toInt(Q_NULLPTR,16);
+            int I= T.mid(8,4).toInt(Q_NULLPTR,16);
+
+
+
+            ui->t9_edit->setText(QString::number(t9,10));
+
+            ui->t10_edit->setText(QString::number(t10,10));
+
+            ui->t11_edit->setText(QString::number(t11,10));
+
+            ui->t12_edit->setText(QString::number(t12,10));
+
+            ui->I_edit->setText(QString::number(I,10));
+
+
+
+
+            return;
+        }
+        if(ID==13)
+        {
+            qDebug()<<"平衡信息"<<messageList.at(9);
+            QString t=messageList.at(9);
+            QString T=t.mid(3).remove(QRegExp("\\s"));
+
+            qDebug()<<"T"<<T; //02状态 00通道 00 C8压差 00 F0周期 01交流信号 00 SOC
+            int t9=T.mid(0,2).toInt(Q_NULLPTR,16);
+            int t10= T.mid(2,2).toInt(Q_NULLPTR,16);
+            int t11= T.mid(4,2).toInt(Q_NULLPTR,16);
+            int t12= T.mid(6,2).toInt(Q_NULLPTR,16);
+            int I= T.mid(8,4).toInt(Q_NULLPTR,16);
+
+            return;
+        }
+
+
+        /*版本号判断*/
+        if(m.mid(3).startsWith("00 10 3F"))
+
+        {
+
+           QString version =m.mid(12).trimmed();//过滤空白字符
+           version.mid(0,2).append("年");
+           version.mid(3,5).append("月");
+           version.mid(7,9).append("日");
+           version.mid(10,12).append(".");
+           qDebug()<<version;
+           //字符串截取
+           /*
+            mid(int position, int n = -1) const
+
+            两个参数，第一个是起始位置，第二个是取串的长度。如果省略第二个参数，则会从起始位置截取到末尾
+            */
+           QString Version=version.mid(0,2).append("年")+version.mid(3,2).append("月")
+                   +version.mid(6,2).append("日")+version.mid(9,2).append(".")
+                   +version.mid(12,2);
+           qDebug()<<"程序版本"<<Version;
+           ui->read_version_edit->setText(Version);
+           qDebug()<<version.mid(0,2).append("年");
+           qDebug()<<version.mid(3,2).append("月");
+           qDebug()<<version.mid(6,2).append("日");
+           qDebug()<<version.mid(9,2).append(".");
+           qDebug()<<version.mid(12,2);
+
+
+//              qDebug()<<m.mid(12);
+//                QString str= messageList.mid(7).join("");
+//                ui->read_version_edit->setText(str);
+        }
+        else
+        return;
+
+//        if(m.mid(3).startsWith("00 10 3F"))
+
     }
 }
 
@@ -524,3 +689,272 @@ void MainWindow::on_Sbalance_open_btn_clicked()
 }
 
 
+
+
+
+void MainWindow::on_liquid_open_btn_clicked()
+{
+    ui->sendDataEdit->setText("00 10 38 01 00 00 00 00");
+    QStringList strList = ui->sendDataEdit->text().split(" ");
+    unsigned char data[8];
+    memset(data,0,8);
+    UINT dlc = 0;
+    dlc = strList.count() > 8 ? 8 : strList.count();
+    for(int i = 0;i < dlc;i ++)
+        data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                           ui->comboBox_5->currentIndex(),
+                           ui->comboBox_6->currentIndex(),
+                           data,dlc))
+    {//发送成功，打印数据
+        QStringList messageList;
+
+        messageList.clear();
+        messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+        messageList << "无";//时间
+        messageList << "无";//时间
+        messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+        messageList << "发送";//收发
+        messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+        messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+        messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+        QString str = "";
+        if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+        {
+            messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+            str = "x| ";
+            for(int j = 0;j < dlc;j ++)
+                str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+        }
+        else
+            messageList << "0x0";//长度
+        messageList << str;//数据
+        AddDataToList(messageList);
+    }
+    else
+        QMessageBox::warning(this,"警告","数据发送失败！");
+
+
+}
+
+void MainWindow::on_liquid_close_btn_clicked()
+{
+    ui->sendDataEdit->setText("00 10 38 00 00 00 00 00");
+    QStringList strList = ui->sendDataEdit->text().split(" ");
+    unsigned char data[8];
+    memset(data,0,8);
+    UINT dlc = 0;
+    dlc = strList.count() > 8 ? 8 : strList.count();
+    for(int i = 0;i < dlc;i ++)
+        data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                           ui->comboBox_5->currentIndex(),
+                           ui->comboBox_6->currentIndex(),
+                           data,dlc))
+    {//发送成功，打印数据
+        QStringList messageList;
+
+        messageList.clear();
+        messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+        messageList << "无";//时间
+        messageList << "无";//时间
+        messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+        messageList << "发送";//收发
+        messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+        messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+        messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+        QString str = "";
+        if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+        {
+            messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+            str = "x| ";
+            for(int j = 0;j < dlc;j ++)
+                str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+        }
+        else
+            messageList << "0x0";//长度
+        messageList << str;//数据
+        AddDataToList(messageList);
+    }
+    else
+        QMessageBox::warning(this,"警告","数据发送失败！");
+}
+
+void MainWindow::on_V_calibration_btn_clicked()
+{
+    if(ui->V_calibration_edit->text().size()>0)
+    {
+
+        int b=ui->V_calibration_edit->text().toInt(Q_NULLPTR,10);
+        QString d=QString("%1").arg(b,4,16,QLatin1Char('0'));
+
+        int n = d.length();
+        while(n-2 > 0)
+        {
+            n = n - 2;
+            d.insert(n," ");
+        }
+
+        QString c = QString("00 10 34 %1 00 00 00").arg(d);
+        ui->sendDataEdit->setText(c);
+        QStringList strList = ui->sendDataEdit->text().split(" ");
+        unsigned char data[8];
+        memset(data,0,8);
+        UINT dlc = 0;
+        dlc = strList.count() > 8 ? 8 : strList.count();
+        for(int i = 0;i < dlc;i ++)
+            data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+        if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                               QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                               ui->comboBox_5->currentIndex(),
+                               ui->comboBox_6->currentIndex(),
+                               data,dlc))
+        {//发送成功，打印数据
+            QStringList messageList;
+
+            messageList.clear();
+            messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+            messageList << "无";//时间
+            messageList << "无";//时间
+            messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+            messageList << "发送";//收发
+            messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+            messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+            messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+            QString str = "";
+            if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+            {
+                messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+                str = "x| ";
+                for(int j = 0;j < dlc;j ++)
+                    str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+            }
+            else
+                messageList << "0x0";//长度
+            messageList << str;//数据
+            AddDataToList(messageList);
+        }
+        else
+            QMessageBox::warning(this,"警告","数据发送失败！");
+
+    }
+
+
+
+
+}
+
+void MainWindow::on_I_calibration_btn_clicked()
+{
+    if(ui->I_calibration_edit->text().size()>0)
+    {
+
+        int b=ui->I_calibration_edit->text().toInt(Q_NULLPTR,10);
+        QString d=QString("%1").arg(b,4,16,QLatin1Char('0'));
+
+        int n = d.length();
+        while(n-2 > 0)
+        {
+            n = n - 2;
+            d.insert(n," ");
+        }
+
+        QString c = QString("00 10 3B %1 00 00 00").arg(d);
+        ui->sendDataEdit->setText(c);
+        QStringList strList = ui->sendDataEdit->text().split(" ");
+        unsigned char data[8];
+        memset(data,0,8);
+        UINT dlc = 0;
+        dlc = strList.count() > 8 ? 8 : strList.count();
+        for(int i = 0;i < dlc;i ++)
+            data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+        if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                               QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                               ui->comboBox_5->currentIndex(),
+                               ui->comboBox_6->currentIndex(),
+                               data,dlc))
+        {//发送成功，打印数据
+            QStringList messageList;
+
+            messageList.clear();
+            messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+            messageList << "无";//时间
+            messageList << "无";//时间
+            messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+            messageList << "发送";//收发
+            messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+            messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+            messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+            QString str = "";
+            if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+            {
+                messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+                str = "x| ";
+                for(int j = 0;j < dlc;j ++)
+                    str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+            }
+            else
+                messageList << "0x0";//长度
+            messageList << str;//数据
+            AddDataToList(messageList);
+        }
+        else
+            QMessageBox::warning(this,"警告","数据发送失败！");
+
+    }
+}
+
+void MainWindow::on_read_version_btn_clicked()
+{
+    ui->sendDataEdit->setText("00 10 3F 00 00 00 00 00");
+    QStringList strList = ui->sendDataEdit->text().split(" ");
+    unsigned char data[8];
+    memset(data,0,8);
+    UINT dlc = 0;
+    dlc = strList.count() > 8 ? 8 : strList.count();
+    for(int i = 0;i < dlc;i ++)
+        data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                           ui->comboBox_5->currentIndex(),
+                           ui->comboBox_6->currentIndex(),
+                           data,dlc))
+    {//发送成功，打印数据
+        QStringList messageList;
+
+        messageList.clear();
+        messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+        messageList << "无";//时间
+        messageList << "无";//时间
+        messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+        messageList << "发送";//收发
+        messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+        messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+        messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+        QString str = "";
+        if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+        {
+            messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+            str = "x| ";
+            for(int j = 0;j < dlc;j ++)
+                str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+        }
+        else
+            messageList << "0x0";//长度
+        messageList << str;//数据
+
+        AddDataToList(messageList);
+
+
+
+    }
+    else
+        QMessageBox::warning(this,"警告","数据发送失败！");
+}

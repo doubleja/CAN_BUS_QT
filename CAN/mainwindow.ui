@@ -170,6 +170,9 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="contextMenuPolicy">
+        <enum>Qt::DefaultContextMenu</enum>
+       </property>
        <property name="text">
         <string>实时显示</string>
        </property>
@@ -592,7 +595,7 @@
          </widget>
         </item>
         <item row="0" column="1">
-         <widget class="QLineEdit" name="lineEdit"/>
+         <widget class="QLineEdit" name="V1_edit"/>
         </item>
         <item row="0" column="2">
          <widget class="QLabel" name="label_16">
@@ -602,17 +605,17 @@
          </widget>
         </item>
         <item row="0" column="3">
-         <widget class="QLineEdit" name="lineEdit_2"/>
+         <widget class="QLineEdit" name="V3_edit"/>
         </item>
         <item row="1" column="0">
-         <widget class="QLabel" name="label_15">
+         <widget class="QLabel" name="V2_label">
           <property name="text">
            <string>v2：</string>
           </property>
          </widget>
         </item>
         <item row="1" column="1">
-         <widget class="QLineEdit" name="lineEdit_3"/>
+         <widget class="QLineEdit" name="V2_edit"/>
         </item>
         <item row="1" column="2">
          <widget class="QLabel" name="label_17">
@@ -622,7 +625,7 @@
          </widget>
         </item>
         <item row="1" column="3">
-         <widget class="QLineEdit" name="lineEdit_4"/>
+         <widget class="QLineEdit" name="V4_edit"/>
         </item>
        </layout>
       </widget>
@@ -691,7 +694,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_8"/>
+           <widget class="QLineEdit" name="t4_edit"/>
           </item>
          </layout>
         </item>
@@ -705,7 +708,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_9"/>
+           <widget class="QLineEdit" name="t5_edit"/>
           </item>
          </layout>
         </item>
@@ -719,7 +722,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_12"/>
+           <widget class="QLineEdit" name="t8_edit"/>
           </item>
          </layout>
         </item>
@@ -733,7 +736,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_15"/>
+           <widget class="QLineEdit" name="t11_edit"/>
           </item>
          </layout>
         </item>
@@ -747,7 +750,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_6"/>
+           <widget class="QLineEdit" name="t2_edit"/>
           </item>
          </layout>
         </item>
@@ -761,7 +764,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_7"/>
+           <widget class="QLineEdit" name="t3_edit"/>
           </item>
          </layout>
         </item>
@@ -775,7 +778,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_11"/>
+           <widget class="QLineEdit" name="t7_edit"/>
           </item>
          </layout>
         </item>
@@ -789,7 +792,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_5"/>
+           <widget class="QLineEdit" name="t1_edit"/>
           </item>
          </layout>
         </item>
@@ -803,7 +806,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_13"/>
+           <widget class="QLineEdit" name="t9_edit"/>
           </item>
          </layout>
         </item>
@@ -817,7 +820,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_14"/>
+           <widget class="QLineEdit" name="t10_edit"/>
           </item>
          </layout>
         </item>
@@ -831,7 +834,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_10"/>
+           <widget class="QLineEdit" name="t6_edit"/>
           </item>
          </layout>
         </item>
@@ -845,7 +848,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_16"/>
+           <widget class="QLineEdit" name="t12_edit"/>
           </item>
          </layout>
         </item>
@@ -862,7 +865,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_17"/>
+           <widget class="QLineEdit" name="I_edit"/>
           </item>
          </layout>
         </item>
@@ -907,14 +910,14 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QCheckBox" name="checkBox">
+           <widget class="QCheckBox" name="balance_state_close">
             <property name="text">
              <string>关闭</string>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QCheckBox" name="checkBox_2">
+           <widget class="QCheckBox" name="balance_state_open">
             <property name="text">
              <string>开启</string>
             </property>
@@ -932,7 +935,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_18"/>
+           <widget class="QLineEdit" name="balance_v_edit"/>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="label_33">
@@ -953,7 +956,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_19"/>
+           <widget class="QLineEdit" name="balance_time_edit"/>
           </item>
           <item row="0" column="2">
            <widget class="QLabel" name="label_35">
@@ -974,14 +977,14 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QRadioButton" name="radioButton">
+           <widget class="QRadioButton" name="signal_con_radio">
             <property name="text">
              <string>通电</string>
             </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QRadioButton" name="radioButton_2">
+           <widget class="QRadioButton" name="signal_discon_radio">
             <property name="text">
              <string>断电</string>
             </property>
@@ -999,7 +1002,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_20"/>
+           <widget class="QLineEdit" name="soc_edit"/>
           </item>
          </layout>
         </item>
@@ -1018,10 +1021,10 @@
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_39">
           <item row="0" column="0">
-           <widget class="QLineEdit" name="lineEdit_25"/>
+           <widget class="QLineEdit" name="BBM_edit"/>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_15">
+           <widget class="QPushButton" name="BBM_edit_btn">
             <property name="text">
              <string>修改</string>
             </property>
@@ -1325,10 +1328,10 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_21"/>
+             <widget class="QLineEdit" name="V_calibration_edit"/>
             </item>
             <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_10">
+             <widget class="QPushButton" name="V_calibration_btn">
               <property name="styleSheet">
                <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
               </property>
@@ -1352,10 +1355,10 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="QLineEdit" name="lineEdit_22"/>
+             <widget class="QLineEdit" name="I_calibration_edit"/>
             </item>
             <item row="0" column="2">
-             <widget class="QPushButton" name="pushButton_11">
+             <widget class="QPushButton" name="I_calibration_btn">
               <property name="styleSheet">
                <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
               </property>
@@ -1379,7 +1382,7 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_38">
           <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_13">
+           <widget class="QPushButton" name="liquid_open_btn">
             <property name="styleSheet">
              <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
             </property>
@@ -1389,7 +1392,7 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="pushButton_14">
+           <widget class="QPushButton" name="liquid_close_btn">
             <property name="styleSheet">
              <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
             </property>
@@ -1411,7 +1414,7 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_34">
           <item row="0" column="0">
-           <widget class="QPushButton" name="pushButton_12">
+           <widget class="QPushButton" name="read_version_btn">
             <property name="styleSheet">
              <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
             </property>
@@ -1421,7 +1424,7 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="QLineEdit" name="lineEdit_23"/>
+           <widget class="QLineEdit" name="read_version_edit"/>
           </item>
          </layout>
         </widget>
