@@ -130,23 +130,35 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
         //ID号识别
         qDebug()<<"接收的数据整个id"<<messageList.at(5);
         QString id= messageList.at(5);
-        int ID =id.mid(8,2).toInt(Q_NULLPTR,10);
-        qDebug()<<"id号"<<id.mid(8,2);
+//        int ID =id.mid(8,2).toInt(Q_NULLPTR,10);
+        int ID =id.mid(7,3).toInt(Q_NULLPTR,10);
+//        qDebug()<<"id号"<<id.mid(8,2);
+
+        qDebug()<<"id号"<<id.mid(7,3);
         //id号
-        if(ID==10)
+        if(ID==100)
         {
             qDebug()<<"四路电压"<<messageList.at(9);
-            QString v1_4=messageList.at(9);
-            //删除t所有空格
-            int v1=v1_4.mid(3,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
-            int v2=v1_4.mid(9,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
-            int v3=v1_4.mid(15,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
-            int v4=v1_4.mid(21,5).remove(QRegExp("\\s")).toInt(Q_NULLPTR,16);
 
-            QString V1=QString::number(v1,10);
-            QString V2=QString::number(v2,10);
-            QString V3=QString::number(v3,10);
-            QString V4=QString::number(v4,10);
+            QString v4_4=messageList.at(9);
+            QString v1_4=v4_4.mid(3).remove(QRegExp("\\s"));//0F000F000F000F00
+            qDebug()<<"四路电压"<<v1_4;
+            //删除t所有空格
+            QString v1= v1_4.mid(2,2)+v1_4.mid(0,2);
+            QString v2= v1_4.mid(6,2)+v1_4.mid(4,2);
+            QString v3= v1_4.mid(10,2)+v1_4.mid(8,2);
+            QString v4= v1_4.mid(14,2)+v1_4.mid(12,2);
+
+            int v11=v1.toInt(Q_NULLPTR,16);
+            int v22=v2.toInt(Q_NULLPTR,16);
+            int v33=v3.toInt(Q_NULLPTR,16);
+            int v44=v4.toInt(Q_NULLPTR,16);
+
+            QString V1=QString::number(v11,10);
+            QString V2=QString::number(v22,10);
+            QString V3=QString::number(v33,10);
+            QString V4=QString::number(v44,10);
+
             qDebug()<<"v1"<<V1;
             qDebug()<<"v2"<<V2;
             qDebug()<<"v3"<<V3;
@@ -157,9 +169,9 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
             ui->V3_edit->setText(V3);
             ui->V4_edit->setText(V4);
 
-            return;
+            return ;
         }
-        if(ID==11)
+        if(ID==101)
         {
             qDebug()<<"八个温度采样"<<messageList.at(9);
             QString t=messageList.at(9);
@@ -193,9 +205,9 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
             ui->t8_edit->setText(QString::number(t8,10));
 
 
-            return;
+            return ;
         }
-        if(ID==12)
+        if(ID==102)
         {
             qDebug()<<"四个温度+电流采样"<<messageList.at(9);
             QString t=messageList.at(9);
@@ -205,9 +217,12 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
             int t10= T.mid(2,2).toInt(Q_NULLPTR,16);
             int t11= T.mid(4,2).toInt(Q_NULLPTR,16);
             int t12= T.mid(6,2).toInt(Q_NULLPTR,16);
-            int I= T.mid(8,4).toInt(Q_NULLPTR,16);
+            int I= T.mid(8,4).toInt(Q_NULLPTR,16);//电流
+
+            int i=65535-I;
 
 
+            ui->I_edit->setText(QString::number(i,10));
 
             ui->t9_edit->setText(QString::number(t9,10));
 
@@ -217,27 +232,71 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
 
             ui->t12_edit->setText(QString::number(t12,10));
 
-            ui->I_edit->setText(QString::number(I,10));
 
 
 
-
-            return;
+            return ;
         }
-        if(ID==13)
+        if(ID==103)
         {
             qDebug()<<"平衡信息"<<messageList.at(9);
             QString t=messageList.at(9);
             QString T=t.mid(3).remove(QRegExp("\\s"));
 
             qDebug()<<"T"<<T; //02状态 00通道 00 C8压差 00 F0周期 01交流信号 00 SOC
-            int t9=T.mid(0,2).toInt(Q_NULLPTR,16);
-            int t10= T.mid(2,2).toInt(Q_NULLPTR,16);
-            int t11= T.mid(4,2).toInt(Q_NULLPTR,16);
-            int t12= T.mid(6,2).toInt(Q_NULLPTR,16);
-            int I= T.mid(8,4).toInt(Q_NULLPTR,16);
 
-            return;
+            int state = T.mid(0,2).toInt(Q_NULLPTR,16);
+//            int channel= T.mid(2,2).toInt(Q_NULLPTR,16);
+            int VD= T.mid(4,4).toInt(Q_NULLPTR,16);
+            int tim= T.mid(8,4).toInt(Q_NULLPTR,16);
+            int signal= T.mid(12,2).toInt(Q_NULLPTR,16);
+            int SOC= T.mid(14,2).toInt(Q_NULLPTR,16);
+
+            qDebug()<<"state"<<state;
+            qDebug()<<"VD"<<VD;
+            qDebug()<<"tim"<<tim;
+            qDebug()<<"signal"<<signal;
+            qDebug()<<"SOC"<<SOC;
+
+            ui->balance_v_edit->setText(QString::number(VD,10));
+            ui->balance_time_edit->setText(QString::number(tim,10));
+            ui->soc_edit->setText(QString::number(SOC,10));
+            if (state==1)
+            {
+                ui->balance_auto->setChecked(0);
+                ui->balance_manual->setChecked(1);
+                ui->balance_close->setChecked(0);
+
+            }
+            if (state==0)
+            {
+                ui->balance_manual->setChecked(0);
+                 ui->balance_auto->setChecked(1);
+                ui->balance_close->setChecked(0);
+
+            }
+            if (state==2)
+            {
+                ui->balance_auto->setChecked(0);
+                ui->balance_manual->setChecked(0);
+                ui->balance_close->setChecked(1);
+
+            }
+
+            if (signal==0)
+            {
+                ui->signal_con_radio->setChecked(1);
+                ui->signal_discon_radio->setChecked(0);
+
+            }
+            if (signal==1)
+            {
+                ui->signal_discon_radio->setChecked(1);
+                ui->signal_con_radio->setChecked(0);
+
+            }
+
+            return ;
         }
 
 
@@ -274,8 +333,8 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
 //                QString str= messageList.mid(7).join("");
 //                ui->read_version_edit->setText(str);
         }
-        else
-        return;
+
+        return ;
 
 //        if(m.mid(3).startsWith("00 10 3F"))
 
@@ -622,28 +681,59 @@ void MainWindow::on_balance_close_btn_clicked()
         QMessageBox::warning(this,"警告","数据发送失败！");
 }
 
-void MainWindow::on_Sbalance_open_btn_clicked()
+void MainWindow::                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   on_Sbalance_open_btn_clicked()
 {
     QString c;
-    QString a= "00 10 37 01 04";
-    if(ui->balance_time->text().size()>0)
+    QString a= "00 10 37 01 ";
+    QString channel;
+    int d = ui->comboBox_7->currentIndex();
+    qDebug()<<"currentIndex--int"<<d;
+    switch(d)
     {
-        int b=ui->balance_time->text().toInt(Q_NULLPTR,10);
-        QString d=QString("%1").arg(b,4,16,QLatin1Char('0'));
-
-        int n = d.length();
-        while(n-2 > 0)
-        {
-            n = n - 2;
-            d.insert(n," ");
-        }
-
-        c = QString("%1 %2 00").arg(a).arg(d);
-//        qDebug()<<ui->balance_time->text().toInt(Q_NULLPTR,16);
-
-//        qDebug()<<c;
-
+    case 0:
+        channel="04";
+        break;
+    case 1:
+        channel="01";
+        break;
+    case 2:
+        channel="02";
+        break;
+    case 3:
+        channel="03";
+        break;
+    default:
+            break;
     }
+//    channel= QString::number(d);
+
+    qDebug()<<"channel"<<channel;
+
+    a+=channel;
+    qDebug()<<"a"<<a;
+
+//    ui->comboBox_7->addItem(channel);
+
+    int time =ui->balance_time->text().toInt(Q_NULLPTR,10);
+
+
+    QString Q=QString("%1").arg(time,4,16,QLatin1Char('0'));
+    int n = Q.length();
+    while(n-2 > 0)
+    {
+        n = n - 2;
+        Q.insert(n," ");
+    }
+    a+=" ";
+    a+=Q;
+    qDebug()<<"a"<<a;
+    c = QString("%1 00").arg(a);
+
+
+    qDebug()<<ui->balance_time->text().toInt(Q_NULLPTR,16);
+
+    qDebug()<<c;
+
 
     ui->sendDataEdit->setText(c);
     QStringList strList = ui->sendDataEdit->text().split(" ");
@@ -957,4 +1047,114 @@ void MainWindow::on_read_version_btn_clicked()
     }
     else
         QMessageBox::warning(this,"警告","数据发送失败！");
+}
+
+void MainWindow::on_BBM_edit_btn_clicked()
+{
+    if(ui->BBM_edit->text().size()>0)
+    {
+        QString BBM_number="00 10 40 ";
+        BBM_number=BBM_number.append(ui->BBM_edit->text());
+        BBM_number=BBM_number.append(" 00 00 00 00");
+
+        qDebug()<<"BBM_number"<<BBM_number;
+
+
+    ui->sendDataEdit->setText(BBM_number);
+    QStringList strList = ui->sendDataEdit->text().split(" ");
+    unsigned char data[8];
+    memset(data,0,8);
+    UINT dlc = 0;
+    dlc = strList.count() > 8 ? 8 : strList.count();
+    for(int i = 0;i < dlc;i ++)
+        data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                           ui->comboBox_5->currentIndex(),
+                           ui->comboBox_6->currentIndex(),
+                           data,dlc))
+    {//发送成功，打印数据
+        QStringList messageList;
+
+        messageList.clear();
+        messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+        messageList << "无";//时间
+        messageList << "无";//时间
+        messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+        messageList << "发送";//收发
+        messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+        messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+        messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+        QString str = "";
+        if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+        {
+            messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+            str = "x| ";
+            for(int j = 0;j < dlc;j ++)
+                str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+        }
+        else
+            messageList << "0x0";//长度
+        messageList << str;//数据
+
+        AddDataToList(messageList);
+
+
+
+    }
+    else
+        QMessageBox::warning(this,"警告","数据发送失败！");
+    }
+}
+
+void MainWindow::on_BMM_Restart_clicked()
+{
+
+    ui->sendDataEdit->setText("00 10 39 00 00 00 00 00");
+    QStringList strList = ui->sendDataEdit->text().split(" ");
+    unsigned char data[8];
+    memset(data,0,8);
+    UINT dlc = 0;
+    dlc = strList.count() > 8 ? 8 : strList.count();
+    for(int i = 0;i < dlc;i ++)
+        data[i] = strList.at(i).toInt(Q_NULLPTR,16);
+
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+                           ui->comboBox_5->currentIndex(),
+                           ui->comboBox_6->currentIndex(),
+                           data,dlc))
+    {//发送成功，打印数据
+        QStringList messageList;
+
+        messageList.clear();
+        messageList << QTime::currentTime().toString("hh:mm:ss zzz");//时间
+        messageList << "无";//时间
+        messageList << "无";//时间
+        messageList << "CH" + QString::number(QVariant(ui->comboBox_4->currentIndex()).toUInt());
+        messageList << "发送";//收发
+        messageList << "0x" + ui->sendIDEdit->text().toUpper();//ID
+        messageList << ((ui->comboBox_5->currentIndex() == 0) ? "数据帧" : "远程帧");//类型
+        messageList << ((ui->comboBox_6->currentIndex() == 0) ? "标准帧" : "扩展帧");//Frame
+        QString str = "";
+        if(ui->comboBox_5->currentIndex() == 0)//数据帧显示数据
+        {
+            messageList << "0x" + QString::number(dlc,16).toUpper();//长度
+            str = "x| ";
+            for(int j = 0;j < dlc;j ++)
+                str += QString("%1 ").arg((unsigned char)data[j],2,16,QChar('0')).toUpper();//QString::number((unsigned char)data[j],16) + " ";
+        }
+        else
+            messageList << "0x0";//长度
+        messageList << str;//数据
+
+        AddDataToList(messageList);
+
+
+
+    }
+    else
+        QMessageBox::warning(this,"警告","数据发送失败！");
+
 }

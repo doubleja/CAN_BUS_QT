@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1330</width>
+    <width>1379</width>
     <height>934</height>
    </rect>
   </property>
@@ -31,7 +31,7 @@
      <rect>
       <x>800</x>
       <y>10</y>
-      <width>501</width>
+      <width>571</width>
       <height>181</height>
      </rect>
     </property>
@@ -144,7 +144,7 @@
      <rect>
       <x>10</x>
       <y>190</y>
-      <width>1300</width>
+      <width>1361</width>
       <height>161</height>
      </rect>
     </property>
@@ -573,7 +573,7 @@
      <rect>
       <x>550</x>
       <y>400</y>
-      <width>761</width>
+      <width>820</width>
       <height>521</height>
      </rect>
     </property>
@@ -889,7 +889,7 @@
       <widget class="QGroupBox" name="groupBox_7">
        <property name="minimumSize">
         <size>
-         <width>261</width>
+         <width>320</width>
          <height>211</height>
         </size>
        </property>
@@ -902,6 +902,20 @@
        <layout class="QGridLayout" name="gridLayout_26">
         <item row="0" column="0">
          <layout class="QGridLayout" name="gridLayout_21">
+          <item row="0" column="2">
+           <widget class="QCheckBox" name="balance_auto">
+            <property name="text">
+             <string>自动</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QCheckBox" name="balance_close">
+            <property name="text">
+             <string>关闭</string>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_31">
             <property name="text">
@@ -909,17 +923,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="QCheckBox" name="balance_state_close">
+          <item row="0" column="3">
+           <widget class="QCheckBox" name="balance_manual">
             <property name="text">
-             <string>关闭</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="QCheckBox" name="balance_state_open">
-            <property name="text">
-             <string>开启</string>
+             <string>手动</string>
             </property>
            </widget>
           </item>
@@ -1015,7 +1022,7 @@
         <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
        </property>
        <property name="title">
-        <string>BBM编号修改</string>
+        <string>BMM</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_40">
         <item row="0" column="0">
@@ -1045,19 +1052,6 @@
           </property>
          </spacer>
         </item>
-        <item row="1" column="0">
-         <spacer name="horizontalSpacer_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>253</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
         <item row="1" column="1">
          <widget class="QLabel" name="label_45">
           <property name="styleSheet">
@@ -1065,6 +1059,13 @@
           </property>
           <property name="text">
            <string>注：默认编号为10</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="BMM_Restart">
+          <property name="text">
+           <string>重启BMM</string>
           </property>
          </widget>
         </item>
@@ -1166,7 +1167,7 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
             </item>
             <item row="1" column="0">
              <layout class="QGridLayout" name="gridLayout_30">
-              <item row="0" column="0">
+              <item row="0" column="2">
                <widget class="QLabel" name="label_44">
                 <property name="styleSheet">
                  <string notr="true">font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
@@ -1176,8 +1177,39 @@ font: 25 11pt &quot;Adobe 宋体 Std L&quot;;</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="0" column="3">
                <widget class="QLineEdit" name="balance_time"/>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_15">
+                <property name="text">
+                 <string>平衡通道：</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="comboBox_7">
+                <item>
+                 <property name="text">
+                  <string>4</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>3</string>
+                 </property>
+                </item>
+               </widget>
               </item>
              </layout>
             </item>

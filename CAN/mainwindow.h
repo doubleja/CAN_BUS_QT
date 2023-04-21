@@ -53,6 +53,10 @@ private slots:
 
     void on_read_version_btn_clicked();
 
+    void on_BBM_edit_btn_clicked();
+
+    void on_BMM_Restart_clicked();
+
 private:
     Ui::MainWindow *ui;
     CANThread *canthread;
