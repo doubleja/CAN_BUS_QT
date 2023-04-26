@@ -34,6 +34,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->tableWidget->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->tableWidget->setSelectionBehavior(QAbstractItemView::SelectRows);
 
+    QValidator*validator=new QIntValidator(1,9,this);
+    ui->BBM_edit->setValidator(validator);
 
     //lineedit文本框输入类型限制 int型
 //   QValidator * validator = new QIntValidator(0,999,this);
@@ -130,13 +132,13 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
         //ID号识别
         qDebug()<<"接收的数据整个id"<<messageList.at(5);
         QString id= messageList.at(5);
-//        int ID =id.mid(8,2).toInt(Q_NULLPTR,10);
-        int ID =id.mid(7,3).toInt(Q_NULLPTR,10);
-//        qDebug()<<"id号"<<id.mid(8,2);
+        int ID =id.mid(8,2).toInt(Q_NULLPTR,10);
+//        int ID =id.mid(7,3).toInt(Q_NULLPTR,10);
+        qDebug()<<"id号"<<id.mid(8,2);
 
-        qDebug()<<"id号"<<id.mid(7,3);
+//        qDebug()<<"id号"<<id.mid(7,3);
         //id号
-        if(ID==100)
+        if(ID==10)
         {
             qDebug()<<"四路电压"<<messageList.at(9);
 
@@ -171,7 +173,7 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
 
             return ;
         }
-        if(ID==101)
+        if(ID==11)
         {
             qDebug()<<"八个温度采样"<<messageList.at(9);
             QString t=messageList.at(9);
@@ -207,7 +209,7 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
 
             return ;
         }
-        if(ID==102)
+        if(ID==12)
         {
             qDebug()<<"四个温度+电流采样"<<messageList.at(9);
             QString t=messageList.at(9);
@@ -237,7 +239,7 @@ void MainWindow::onGetProtocolData(VCI_CAN_OBJ *vci,unsigned int dwRel,unsigned 
 
             return ;
         }
-        if(ID==103)
+        if(ID==13)
         {
             qDebug()<<"平衡信息"<<messageList.at(9);
             QString t=messageList.at(9);
@@ -510,8 +512,8 @@ void MainWindow::on_DC_Open_btn_clicked()
     for(int i = 0;i < dlc;i ++)
         data[i] = strList.at(i).toInt(Q_NULLPTR,16);
 
-    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toUInt(),
-                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toUInt(),
+    if(canthread->sendData(QVariant(ui->comboBox_4->currentIndex()).toInt(),
+                           QVariant(ui->sendIDEdit->text().toInt(Q_NULLPTR,16)).toInt(),
                            ui->comboBox_5->currentIndex(),
                            ui->comboBox_6->currentIndex(),
                            data,dlc))
@@ -882,14 +884,21 @@ void MainWindow::on_V_calibration_btn_clicked()
         int b=ui->V_calibration_edit->text().toInt(Q_NULLPTR,10);
         QString d=QString("%1").arg(b,4,16,QLatin1Char('0'));
 
+        qDebug()<<"校准电压"<<d<<endl;
+        QString start =d.mid(2,2);
+        start+=d.mid(0,2);
         int n = d.length();
         while(n-2 > 0)
         {
             n = n - 2;
-            d.insert(n," ");
+            start.insert(n," ");
         }
 
-        QString c = QString("00 10 34 %1 00 00 00").arg(d);
+
+        qDebug()<<"校准电压"<<d<<endl;
+
+
+        QString c = QString("00 10 34 %1 00 00 00").arg(start);
         ui->sendDataEdit->setText(c);
         QStringList strList = ui->sendDataEdit->text().split(" ");
         unsigned char data[8];
@@ -947,14 +956,17 @@ void MainWindow::on_I_calibration_btn_clicked()
         int b=ui->I_calibration_edit->text().toInt(Q_NULLPTR,10);
         QString d=QString("%1").arg(b,4,16,QLatin1Char('0'));
 
+        qDebug()<<"校准电流"<<d<<endl;
+        QString start =d.mid(2,2);
+        start+=d.mid(0,2);
         int n = d.length();
         while(n-2 > 0)
         {
             n = n - 2;
-            d.insert(n," ");
+            start.insert(n," ");
         }
 
-        QString c = QString("00 10 3B %1 00 00 00").arg(d);
+        QString c = QString("00 10 3B %1 00 00 00").arg(start);
         ui->sendDataEdit->setText(c);
         QStringList strList = ui->sendDataEdit->text().split(" ");
         unsigned char data[8];
@@ -1051,8 +1063,10 @@ void MainWindow::on_read_version_btn_clicked()
 
 void MainWindow::on_BBM_edit_btn_clicked()
 {
+
     if(ui->BBM_edit->text().size()>0)
     {
+
         QString BBM_number="00 10 40 ";
         BBM_number=BBM_number.append(ui->BBM_edit->text());
         BBM_number=BBM_number.append(" 00 00 00 00");
